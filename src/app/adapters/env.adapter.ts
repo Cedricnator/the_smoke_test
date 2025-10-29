@@ -1,3 +1,3 @@
-export interface EnvValidator<T> {
-  validate(data: unknown): T;
+export abstract class EnvValidator<T> {
+  abstract validate(data: unknown): T;
 }

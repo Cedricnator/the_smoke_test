@@ -1,4 +1,4 @@
-import { object, string, number, pipe, transform, minLength } from "valibot";
+import { object, string, pipe, transform, minLength } from "valibot";
 import { ValibotEnvAdapter } from "../adapters/valibot-env.adapter";
 
 const envSchema = object({

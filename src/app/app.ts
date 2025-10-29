@@ -1,46 +1,56 @@
-import express, { Router } from 'express';
+import express, { Router, Express, Request, Response, NextFunction } from 'express';
+import type { Logger } from './adapters/logger.adapter';
 
-interface OptionsConstructor {
+interface AppOptions {
   port: number;
   host: string;
   routes: Router;
+  logger: Logger;
 }
 
 export class App {
-  private readonly server = express();
   private readonly port: number;
   private readonly host: string;  
+  private readonly server: Express;
   private readonly routes: Router;
+  private readonly logger: Logger;
 
-  constructor(opts: OptionsConstructor) {
+  constructor(opts: AppOptions) {
     this.port = opts.port;
     this.host = opts.host;
+    this.server = express();
     this.routes = opts.routes;
+    this.logger = opts.logger;
   }
 
-  private configureMiddlewares(){
-    this.server.use(express.json());
-  }
-
-  private configureCors(){
-    this.server.use((req, res, next) => {
-      res.append('Access-Control-Allow-Origin', ['*']);
-      res.append('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
+  /**
+   * Sets up CORS headers to allow cross-origin requests.
+   * @returns {Express} instance with CORS configured.
+   */
+  private configureCors(): Express {
+    return this.server.use(async (req: Request, res: Response, next: NextFunction) => {
+      res.setHeader('Access-Control-Allow-Origin', '*');
+      res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
       next();
     });
   }
 
-  async start(){
-    this.configureMiddlewares();
+  /**
+   * Start the Express server 
+   * @returns {void}
+   */
+  async start(): Promise<void> {
     this.configureCors();
-
     this.server.use(this.routes);
-
     return new Promise<void>((resolve) => {
       this.server.listen(this.port, this.host, () => {
-        console.log(`Server running at http://${this.host}:${this.port}/`);
+        this.logger.info(`Server running at http://${this.host}:${this.port}/`, {
+          port: this.port,
+          host: this.host,
+          environment: process.env.NODE_ENV,
+        });
         resolve();
       });
     });
   }
-}  
+}
