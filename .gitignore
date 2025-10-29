@@ -8,3 +8,7 @@ logs
 .env.release
 .env.test
 
+# Cypress
+cypress/videos
+cypress/screenshots
+cypress/downloads
