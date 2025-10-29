@@ -1,0 +1,14 @@
+node_modules
+.idea
+.vscode
+logs
+.env
+.env.production
+.env.local
+.env.release
+.env.test
+
+# Cypress
+cypress/videos
+cypress/screenshots
+cypress/downloads

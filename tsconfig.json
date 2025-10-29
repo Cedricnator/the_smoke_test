@@ -1,0 +1,43 @@
+{
+  "compilerOptions": {
+    // Target modern JavaScript features for output
+    "target": "esnext", // Or "ESNext" for the latest features
+    "module": "ESNext", // Or "NodeNext" for Node.js projects
+    "lib": ["ES2022", "DOM"], // Or specific libs like "ES2022" for Node.js
+
+    // Strictness and type safety
+    "strict": true, // Enables all strict checking options
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+    "strictPropertyInitialization": true,
+    "noImplicitThis": true,
+    "useUnknownInCatchVariables": true,
+    "alwaysStrict": true,
+
+    // Module resolution
+    "moduleResolution": "Bundler",
+    "baseUrl": "./src", // Base directory for module resolution
+    "paths": {
+      "@/*": ["./*"] // Example path alias
+    },
+    "esModuleInterop": true, // Enables default imports from CommonJS modules
+    "forceConsistentCasingInFileNames": true,
+
+    // Output and project structure
+    "outDir": "./dist", // Output directory for compiled JavaScript
+    "rootDir": "./src", // Root directory of TypeScript source files
+    "declaration": true, // Generate declaration files (.d.ts) for libraries
+    "sourceMap": true, // Generate source maps for debugging
+    "jsx": "react-jsx", // Or "react-native", "preserve", etc.
+
+    // Other helpful options
+    "skipLibCheck": true, // Skip type checking of declaration files
+    "resolveJsonModule": true, // Allow importing .json files
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": true // Ensures each file can be safely transpiled independently
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"], // Files to include in compilation
+  "exclude": ["node_modules", "dist"] // Files to exclude from compilation
+}

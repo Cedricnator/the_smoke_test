@@ -1,0 +1,8 @@
+services:
+  the-smoke-test-app:
+    build: 
+      context: .
+      dockerfile: build/Dockerfile
+    container_name: the-smoke-test-app 
+    ports:
+      - "9000:3000"
