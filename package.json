@@ -44,6 +44,7 @@
   },
   "dependencies": {
     "express": "^5.1.0",
+    "openai": "^6.7.0",
     "pino": "^10.1.0",
     "valibot": "^1.1.0"
   }
