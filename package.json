@@ -6,8 +6,8 @@
   "scripts": {
     "start": "node dist/main.js",
     "build": "tsc",
-    "dev": "tsx src/main.ts",
-    "dev:watch": "tsx watch src/main.ts",
+    "dev": "tsx --env-file=.env src/main.ts",
+    "dev:watch": "tsx watch --env-file=.env src/main.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -33,6 +33,7 @@
     "typescript": "^5.9.3"
   },
   "dependencies": {
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "valibot": "^1.1.0"
   }
 }
