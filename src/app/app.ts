@@ -1,5 +1,11 @@
-import express, { Router, Express, Request, Response, NextFunction } from 'express';
-import type { Logger } from './adapters/logger.adapter';
+import express, {
+  Router,
+  Express,
+  Request,
+  Response,
+  NextFunction,
+} from "express";
+import type { Logger } from "./adapters/logger.adapter";
 
 interface AppOptions {
   port: number;
@@ -10,7 +16,7 @@ interface AppOptions {
 
 export class App {
   private readonly port: number;
-  private readonly host: string;  
+  private readonly host: string;
   private readonly server: Express;
   private readonly routes: Router;
   private readonly logger: Logger;
@@ -28,29 +34,36 @@ export class App {
    * @returns {Express} instance with CORS configured.
    */
   private configureCors(): Express {
-    return this.server.use(async (req: Request, res: Response, next: NextFunction) => {
-      res.setHeader('Access-Control-Allow-Origin', '*');
-      res.setHeader('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE');
-      next();
-    });
+    return this.server.use(
+      async (req: Request, res: Response, next: NextFunction) => {
+        res.setHeader("Access-Control-Allow-Origin", "*");
+        res.setHeader("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
+        next();
+      },
+    );
   }
 
   /**
-   * Start the Express server 
+   * Start the Express server
    * @returns {void}
    */
   async start(): Promise<void> {
     this.configureCors();
+    this.server.use(express.json());
     this.server.use(this.routes);
     return new Promise<void>((resolve) => {
       this.server.listen(this.port, this.host, () => {
-        this.logger.info(`Server running at http://${this.host}:${this.port}/`, {
-          port: this.port,
-          host: this.host,
-          environment: process.env.NODE_ENV,
-        });
+        this.logger.info(
+          `Server running at http://${this.host}:${this.port}/`,
+          {
+            port: this.port,
+            host: this.host,
+            environment: process.env.NODE_ENV,
+          },
+        );
         resolve();
       });
     });
   }
 }
+
