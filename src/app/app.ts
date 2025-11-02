@@ -19,6 +19,7 @@ export class App {
     this.port = opts.port;
     this.host = opts.host;
     this.server = express();
+    this.server.use(express.json());
     this.routes = opts.routes;
     this.logger = opts.logger;
   }
