@@ -7,7 +7,7 @@ import { Logger } from "./app/adapters/logger.adapter";
 class Main {
   private readonly logger: Logger;
 
-  constructor(){
+  constructor() {
     this.logger = createLogger("main");
   }
 
@@ -17,7 +17,7 @@ class Main {
    */
   async bootstrap(): Promise<void> {
     try {
-      this.logger.info("Starting application...", { 
+      this.logger.info("🚀 Starting application...", {
         nodeVersion: process.version,
         environment: env.NODE_ENV,
       });
@@ -30,10 +30,10 @@ class Main {
         routes: appRoutes,
         logger: this.logger,
       });
-      
+
       await app.start();
     } catch (error) {
-      this.logger.error("Failed to start application", { 
+      this.logger.error("Failed to start application", {
         error: error instanceof Error ? error.message : String(error),
       });
       process.exit(1);
