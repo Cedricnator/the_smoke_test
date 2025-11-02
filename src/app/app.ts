@@ -53,6 +53,11 @@ export class App {
     this.server.use(this.routes);
     return new Promise<void>((resolve) => {
       this.server.listen(this.port, this.host, () => {
+        this.logger.info("☘️  Routes configured.");
+        this.logger.info("Server started");
+        this.logger.info("Available endpoints:");
+        this.logger.info("[GET]  /health");
+        this.logger.info("[POST] /api/v1/assistant/study-plan");
         this.logger.info(
           `Server running at http://${this.host}:${this.port}/`,
           {

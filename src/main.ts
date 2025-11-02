@@ -17,7 +17,7 @@ class Main {
    */
   async bootstrap(): Promise<void> {
     try {
-      this.logger.info("Starting application...", {
+      this.logger.info("🚀 Starting application...", {
         nodeVersion: process.version,
         environment: env.NODE_ENV,
       });
