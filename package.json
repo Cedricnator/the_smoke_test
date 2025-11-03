@@ -1,51 +1,51 @@
 {
-  "name": "the_smoke_test",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "start": "node dist/main.js",
-    "build": "tsc",
-    "dev": "tsx --env-file=.env src/main.ts",
-    "dev:watch": "tsx watch --env-file=.env src/main.ts",
-    "test": "vitest run",
-    "test:watch": "vitest",
-    "test:ui": "vitest --ui",
-    "test:coverage": "vitest run --coverage",
-    "cypress": "cypress open",
-    "cypress:run": "cypress run",
-    "smoke:test": "cypress run --spec 'cypress/e2e/smoke.cy.ts'"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Cedricnator/the_smoke_test.git"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "type": "module",
-  "bugs": {
-    "url": "https://github.com/Cedricnator/the_smoke_test/issues"
-  },
-  "homepage": "https://github.com/Cedricnator/the_smoke_test#readme",
-  "devDependencies": {
-    "@types/express": "^5.0.5",
-    "@types/node": "^24.9.2",
-    "@typescript-eslint/eslint-plugin": "^8.46.2",
-    "@typescript-eslint/parser": "^8.46.2",
-    "@vitest/ui": "^4.0.4",
-    "cypress": "^15.5.0",
-    "eslint": "^9.38.0",
-    "pino-pretty": "^13.1.2",
-    "ts-node": "^10.9.2",
-    "tsx": "^4.20.6",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.4"
-  },
-  "dependencies": {
-    "express": "^5.1.0",
-    "openai": "^6.7.0",
-    "pino": "^10.1.0",
-    "valibot": "^1.1.0"
-  }
+    "name": "the_smoke_test",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+        "start": "node dist/main.js",
+        "build": "tsc",
+        "dev": "tsx --env-file=.env src/main.ts",
+        "dev:watch": "tsx watch --env-file=.env src/main.ts",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:ui": "vitest --ui",
+        "test:coverage": "vitest run --coverage",
+        "cypress": "cypress open",
+        "cypress:run": "cypress run",
+        "smoke:test": "cypress run --spec 'cypress/e2e/smoke*.cy.ts'"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Cedricnator/the_smoke_test.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "type": "module",
+    "bugs": {
+        "url": "https://github.com/Cedricnator/the_smoke_test/issues"
+    },
+    "homepage": "https://github.com/Cedricnator/the_smoke_test#readme",
+    "devDependencies": {
+        "@types/express": "^5.0.5",
+        "@types/node": "^24.9.2",
+        "@typescript-eslint/eslint-plugin": "^8.46.2",
+        "@typescript-eslint/parser": "^8.46.2",
+        "@vitest/ui": "^4.0.4",
+        "cypress": "^15.5.0",
+        "eslint": "^9.38.0",
+        "pino-pretty": "^13.1.2",
+        "ts-node": "^10.9.2",
+        "tsx": "^4.20.6",
+        "typescript": "^5.9.3",
+        "vitest": "^4.0.4"
+    },
+    "dependencies": {
+        "express": "^5.1.0",
+        "openai": "^6.7.0",
+        "pino": "^10.1.0",
+        "valibot": "^1.1.0"
+    }
 }
