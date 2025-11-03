@@ -1,0 +1,12 @@
+cypress
+node_modules
+.env.example
+README.md
+.vscode
+.gitignore
+makefile
+vitest.config.ts
+.idea
+MACOSX
+logs
+docs
