@@ -4,24 +4,121 @@ import { CreateStudyPlanDto } from "./domain/dtos/create-study-plan.dto";
 import { Plan } from "./domain/models/plan.model";
 
 export class AssistantService {
-  private openaiClient: OpenAI;
+    private openaiClient: OpenAI;
 
-  constructor(private readonly logger: Logger) {
-    this.openaiClient = new OpenAI({ 
-      baseURL: "https://openrouter.ai/api/v1",
-      apiKey: process.env.OPENROUTER_API_KEY || ""
-    });
-  }
+    constructor(private readonly logger: Logger) {
+        this.openaiClient = new OpenAI({
+            baseURL: "https://openrouter.ai/api/v1",
+            apiKey: process.env.OPENROUTER_API_KEY || "",
+        });
+    }
 
-  async generateStudyPlan(params: CreateStudyPlanDto) {
-    this.logger.info("Generating study plan with OpenRouter model...");
-    const topics = params.topics.map((t) => `- ${t}`).join("\n");
-    const completion = await this.openaiClient.chat.completions.create({
-      model: "tngtech/deepseek-r1t-chimera:free",
-      messages: [
-        {
-          role: "system",
-          content: `# ROL
+    async generateStudyPlan(params: CreateStudyPlanDto) {
+        this.logger.info("Generating study plan with OpenRouter model...");
+        const modelName = "tngtech/deepseek-r1t-chimera:free";
+        const topics = params.topics.map((t) => `- ${t}`).join("\n");
+        const completion = await this.openaiClient.chat.completions.create({
+            model: modelName,
+            messages: [
+                {
+                    role: "system",
+                    content: this.getSystemPrompt(),
+                },
+                {
+                    role: "user",
+                    content: `Crea un plan de estudio basado en los siguientes parámetros:
+
+Temas:
+${topics}
+
+Duración: ${params.weeks} semanas
+Dedicación semanal: ${params.weeklyDedication} horas
+Fecha de inicio: ${params.startDate || "No especificada"}
+Restricciones: ${JSON.stringify(params.restrictions || {}, null, 2)}
+origin: ${modelName}
+
+Recuerda: sigue el proceso paso a paso y devuelve SOLO el JSON.`,
+                },
+            ],
+            response_format: {
+                type: "json_schema",
+                json_schema: {
+                    name: "study_plan",
+                    schema: this.getResponseSchema(),
+                    strict: true,
+                },
+            },
+        });
+
+        this.logger.info("Received study plan from OpenRouter model.");
+        this.logger.debug(`Study plan response: ${JSON.stringify(completion)}`);
+
+        const messageContent = completion.choices[0].message.content;
+        this.logger.debug(`Model message content: ${messageContent}`);
+        let studyPlan: Plan;
+
+        try {
+            if (!messageContent) throw new Error("Empty response from model.");
+            studyPlan = JSON.parse(messageContent) as Plan;
+        } catch (error) {
+            this.logger.error(
+                "Failed to parse study plan JSON from model response.",
+                { error }
+            );
+            throw new Error("Invalid JSON format received from model.");
+        }
+
+        return studyPlan;
+    }
+
+    private getResponseSchema() {
+        return {
+            type: "object",
+            properties: {
+                weeks: {
+                    type: "array",
+                    items: {
+                        type: "object",
+                        properties: {
+                            weekNumber: { type: "integer" },
+                            startDate: { type: "string" },
+                            endDate: { type: "string" },
+                            topics: {
+                                type: "array",
+                                items: { type: "string" },
+                            },
+                            activities: {
+                                type: "array",
+                                items: { type: "string" },
+                            },
+                            estimatedHours: { type: "number" },
+                            milestone: { type: "string" },
+                        },
+                        required: [
+                            "weekNumber",
+                            "startDate",
+                            "endDate",
+                            "topics",
+                            "activities",
+                            "estimatedHours",
+                        ],
+                    },
+                },
+                metadata: {
+                    type: "object",
+                    properties: {
+                        origin: { type: "string" },
+                        generatedAt: { type: "string" },
+                    },
+                    required: ["origin", "generatedAt"],
+                },
+            },
+            required: ["weeks", "metadata"],
+        };
+    }
+
+    private getSystemPrompt(): string {
+        return `# ROL
 Eres un asistente experto en la creación de planes de estudio personalizados para estudiantes universitarios.
 Tu tarea es ayudar a los estudiantes a organizar su tiempo de estudio de manera efectiva, teniendo en cuenta sus objetivos, duración del curso, dedicación semanal y cualquier restricción que puedan tener.
 
@@ -52,7 +149,7 @@ Devuelve ÚNICAMENTE un objeto JSON válido con esta estructura exacta:
     }
   ],
   "metadata": {
-    "origin": "llm",
+    "origin": "tngtech/deepseek-r1t-chimera:free",
     "generatedAt": "ISO 8601 timestamp"
   }
 }
@@ -95,7 +192,7 @@ Output:
     }
   ],
   "metadata": {
-    "origin": "llm",
+    "origin": "tngtech/deepseek-r1t-chimera:free",
     "generatedAt": "2025-11-02T22:00:00.000Z"
   }
 }
@@ -147,7 +244,7 @@ Output:
     }
   ],
   "metadata": {
-    "origin": "llm",
+    "origin": "tngtech/deepseek-r1t-chimera:free",
     "generatedAt": "2025-11-02T22:00:00.000Z"
   }
 }
@@ -160,40 +257,6 @@ Output:
 - Si NO hay fecha de inicio, usa cadena vacía "" para startDate y endDate
 - Formato de fechas: YYYY-MM-DD
 - Distribuye los temas de forma equilibrada entre semanas
-- Las actividades deben ser específicas y accionables`,
-        },
-        {
-          role: "user",
-          content: `Crea un plan de estudio basado en los siguientes parámetros:
-
-Temas:
-${topics}
-
-Duración: ${params.weeks} semanas
-Dedicación semanal: ${params.weeklyDedication} horas
-Fecha de inicio: ${params.startDate || "No especificada"}
-Restricciones: ${JSON.stringify(params.restrictions || {}, null, 2)}
-
-Recuerda: sigue el proceso paso a paso y devuelve SOLO el JSON.`,
-        },
-      ],
-    });
-
-    this.logger.info("Received study plan from OpenRouter model.");
-    this.logger.debug(`Study plan response: ${JSON.stringify(completion)}`);
-
-    const messageContent = completion.choices[0].message.content;
-    this.logger.debug(`Model message content: ${messageContent}`);
-    let studyPlan: Plan;
-
-    try {
-      if (!messageContent) throw new Error("Empty response from model.");
-      studyPlan = JSON.parse(messageContent) as Plan;
-    } catch (error) {
-      this.logger.error("Failed to parse study plan JSON from model response.", { error });
-      throw new Error("Invalid JSON format received from model.");
+- Las actividades deben ser específicas y accionables`;
     }
-
-    return studyPlan;
-  }
 }
