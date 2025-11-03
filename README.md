@@ -149,7 +149,7 @@ El sistema sigue un pipeline simple para generar planes de estudio:
 
 ### Ejemplo
 
-Peticion:
+Petición:
 
 ```json
 {
